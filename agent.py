@@ -373,10 +373,10 @@ class TD3_Agents:
 
 class Q_Learning:
     def __init__(self):
-        self.Q = np.zeros((24, 24, 41, 41))
+        self.Q = np.zeros((24, 24, 49, 49))
         self.epsilon = 0.1
-        self.n_actions = 41
-        self.n_charges = 41
+        self.n_actions = 49
+        self.n_charges = 49
         self.gamma = 0.99
         self.alpha = 0.1
 
@@ -404,7 +404,7 @@ class Q_Learning:
         for i, state in enumerate(states):
             # print("Select Action", state)
             actions[i] = np.argmax(self.Q[state[0], state[1], state[2], :])
-            if np.random.random() < self.epsilon * (1-episode/n_episodes):
+            if np.random.random() < self.epsilon * (1-episode/n_episodes + 0.01):
                 actions[i] = np.random.choice(np.arange(self.n_actions))
         return np.expand_dims(self.undiscretize_actions(actions), axis=0)
 
@@ -414,6 +414,6 @@ class Q_Learning:
         for i in range(states.shape[0]):
             # print("ATB", states[i])
             self.Q[states[i,0], states[i,1], states[i,2], actions[i]] += \
-                (self.alpha * (1-episode/n_episodes)) * (rewards[i] + \
+                (self.alpha * (1-episode/n_episodes) + 0.01) * (rewards[i] + \
                                 self.gamma * np.max(self.Q[states[i,0], states[i,1], states[i,2], :]) - \
                                 self.Q[states[i,0], states[i,1], states[i,2], actions[i]])

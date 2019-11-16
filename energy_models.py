@@ -108,9 +108,8 @@ class HeatPump:
         self.heat_supply = []
         self.cooling_supply = []
                    
-    def set_cop(self, time_step, t_source_cooling):
+    def set_cop(self, t_source_cooling):
         # This is a hack, fix this class
-        self.time_step = time_step
         self.t_source_cooling = t_source_cooling
 
         #Caping the COP (coefficient of performance) to 1.0 - 20.0

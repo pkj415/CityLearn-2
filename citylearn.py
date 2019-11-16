@@ -80,6 +80,10 @@ class CityLearn(gym.Env):
             s3 = 0.0
             self.state.append(np.array([s1,s2,s3], dtype=np.float32))
             building.reset()
+
+        for key in self.total_charges_made.keys():
+            self.total_charges_made[key] = 0
+
         return self._get_ob()
     
     def _get_ob(self):

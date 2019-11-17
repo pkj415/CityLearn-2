@@ -372,30 +372,30 @@ class TD3_Agents:
                         self.tgt_crt_net[i].alpha_sync(alpha=1 - self.SYNC_RATE)
 
 class Q_Learning:
-    def __init__(self):
-        self.Q = np.zeros((24, 24, 49, 49))
+    def __init__(self, levels, min_action, max_action):
+        self.Q = np.zeros((24, 24, levels, levels))
         self.epsilon = 0.1
-        self.n_actions = 49
-        self.n_charges = 49
+        self.n_actions = levels
+        self.n_charges = levels
         self.gamma = 0.99
         self.alpha = 0.1
+        self.min_action = min_action
+        self.max_action = max_action
 
     def discretize_states(self, states):
         states_copy = np.copy(states)
         states_copy[:,2] //= (1/(self.n_actions - 1))
-        states_copy[:,1] -= 17
-        states_copy[:,0] -= 1
+        states_copy[:,1] -= 17  # 17 is the minimum tem[]
+        states_copy[:,0] -= 1   # Change 1-24 to 0-23
         # print("Disc", states, states_copy)
         return states_copy.astype(np.int)
 
     def discretize_actions(self, actions):
-        actions = (actions + 0.5) // (1/(self.n_actions - 1))
+        actions = (actions - self.min_action) // (1/(self.n_actions - 1))
         return actions.astype(np.int)
 
     def undiscretize_actions(self, actions):
-        a = -0.5 + (actions) / (self.n_actions - 1)
-        # if a[0] < -0.5 or a[0] > 0.5:
-        # print("ERROR: ", a, actions)
+        a = self.min_action + (actions) / (self.n_actions - 1)
         return a
 
     def select_action(self, states, episode, n_episodes):
